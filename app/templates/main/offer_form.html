@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Post an Offer — ShareCircle{% endblock %}
+{% block content %}
+<section class="form-page-shell content-width">
+  <div class="form-card">
+    <span class="eyebrow" data-i18n="form.offer.eyebrow">SHARE WHAT YOU CAN</span>
+    <h1 data-i18n="form.offer.title">Post an Offer</h1>
+    <p data-i18n="form.offer.subtitle">Your hour, ride, skill, item, or meal can unlock someone else’s day.</p>
+    <form id="offerForm" class="form-stack" novalidate>
+      <label><span data-i18n="form.title">Title</span><input name="title" id="offerTitle" maxlength="100" required placeholder="I can tutor algebra on weekends" aria-describedby="offerTitleError offerTitleCount"><small class="char-count" id="offerTitleCount">0/100</small><small class="field-error" id="offerTitleError"></small></label>
+      <label><span data-i18n="form.description">Description</span><textarea name="description" id="offerDescription" rows="6" maxlength="1000" required placeholder="Tell neighbors what you can help with." aria-describedby="offerDescriptionCount offerDescriptionError"></textarea><small class="char-count" id="offerDescriptionCount">0/1000</small><small class="field-error" id="offerDescriptionError"></small></label>
+      <div class="form-choice-grid">
+        <fieldset class="choice-group"><legend data-i18n="form.category">Category</legend><div class="choice-grid category-grid">
+          {% for cat in categories %}<label class="choice-card"><input type="radio" name="category" value="{{ cat }}" required><span class="choice-icon" aria-hidden="true"><svg class="ui-icon"><use href="#icon-ripple"></use></svg></span><span>{{ cat }}</span></label>{% endfor %}
+        </div></fieldset>
+        <label><span data-i18n="form.availability">Availability</span><input name="availability" maxlength="120" required placeholder="Saturday afternoons" aria-describedby="availabilityError"><small class="field-error" id="availabilityError"></small></label>
+      </div>
+      <div class="location-picker">
+        <div class="location-picker-head"><div><strong data-i18n="location.title">Add a location</strong><small data-i18n="location.subtitle">Use your device coordinates or type an area. ShareCircle never silently requests location.</small></div></div>
+        <div class="location-picker-actions"><button class="btn btn-secondary btn-small" type="button" data-use-location data-i18n="location.use">Use my location</button><button class="btn btn-ghost btn-small" type="button" data-clear-location data-i18n="location.clear">Clear</button></div>
+        <label class="location-field-label"><span data-i18n="location.area">Area</span><input name="location" maxlength="120" autocomplete="address-level2" placeholder="e.g. Rajpur Road, Dehradun" aria-describedby="offerLocationError"><small class="field-error" id="offerLocationError"></small></label>
+        <span class="location-status location-status-muted" data-location-status data-i18n="location.none">No location added. You can still publish this post.</span>
+      </div>
+      <input type="hidden" name="lat"><input type="hidden" name="lng">
+      <div class="form-insight" data-form-insight hidden><strong data-helper-count>Matching helpers nearby: —</strong><small data-suggestion></small></div>
+      <small class="field-error" data-form-error></small>
+      <button class="btn btn-primary btn-large" type="submit" data-submit-label="Publish offer" data-i18n="form.offer.submit">Publish offer</button>
+    </form>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/forms.js') }}" defer></script>{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — ShareCircle{% endblock %}
+{% block content %}
+<section class="dashboard-hero content-width">
+  <div><span class="eyebrow" data-i18n="dashboard.eyebrow">YOUR CIRCLE</span><h1>Hey, {{ current_user['full_name'].split()[0] }}.</h1><p data-i18n="dashboard.subtitle">Keep your asks moving and your generosity visible.</p></div>
+  {% set points = current_user['impact_points']|int %}{% set next_level = ((points // 100) + 1) * 100 %}{% set progress = ((points % 100) / 100 * 100)|round|int %}
+  <div class="impact-pill"><strong>{{ points }}</strong><span data-i18n="stats.points">Impact Points</span><small>{{ next_level - points }} <span data-i18n="dashboard.to_badge">to next badge</span></small><i style="--progress:{{ progress }}%"></i></div>
+</section>
+<div class="content-width quick-actions"><a class="btn btn-primary" href="{{ url_for('main.new_need') }}" data-i18n="dashboard.post_need">Post Need</a><a class="btn btn-secondary" href="{{ url_for('main.new_offer') }}" data-i18n="dashboard.post_offer">Post Offer</a>{% if offers %}<a class="btn btn-ghost" href="{{ url_for('main.nearby') }}" data-i18n="dashboard.nearby">Nearby needs</a>{% endif %}<a class="btn btn-ghost" href="{{ url_for('main.profile', username=current_user['username']) }}" data-i18n="dashboard.profile">View profile</a></div>
+
+{% if active_match %}
+<section class="content-width active-match-shell" id="activeMatchCard" data-active-match-id="{{ active_match['id'] }}" data-viewer-role="{% if active_match['need_user_id'] == current_user['id'] %}need_owner{% else %}offerer{% endif %}" data-status="{{ active_match['status'] }}">
+  <div class="active-match-head"><div><span class="eyebrow">ACTIVE MATCH #{{ active_match['id'] }}</span><h2>{{ active_match['need_title'] }}</h2><p>{{ active_match['need_category'] }} · {{ active_match['status']|capitalize }}</p></div><a class="btn btn-secondary btn-small" href="{{ url_for('main.match_view', match_id=active_match['id']) }}" data-i18n="dashboard.open_match">Open match</a></div>
+  <div class="active-match-grid"><div class="active-match-copy">
+    <div class="status-callout" aria-live="polite"><strong data-active-copy-title>Syncing match.</strong><span data-active-copy-body>Live status will appear here.</span></div>
+    <div class="active-match-location"><span class="active-match-icon"><svg class="ui-icon" aria-hidden="true"><use href="#icon-pin"></use></svg></span><div><strong>{{ active_match['need_location'] or 'Nearby' }}</strong><span>{{ active_match['need_title'] }}</span>{% if active_match['need_lat'] is not none and active_match['need_lng'] is not none %}<code>{{ '%.5f'|format(active_match['need_lat']) }}, {{ '%.5f'|format(active_match['need_lng']) }}</code>{% endif %}</div></div>
+    <div class="active-match-actions" data-active-actions></div>
+    <div class="active-match-actions-secondary"><a class="btn btn-primary btn-small" href="{{ url_for('main.match_view', match_id=active_match['id']) }}" data-i18n="dashboard.open_match">Open match</a><button class="btn btn-ghost btn-small" data-open-messages="{{ active_match['id'] }}" type="button" data-i18n="match.message">Message</button></div>
+  </div></div>
+</section>
+{% endif %}
+
+{% if not needs and not offers and not matches %}
+<section class="content-width first-run-card"><span class="eyebrow" data-i18n="dashboard.get_started">GET STARTED</span><h2 data-i18n="dashboard.build_title">Build your circle in three moves.</h2><div class="first-run-list"><a href="{{ url_for('main.new_need') }}"><strong>1</strong><span><b data-i18n="dashboard.step_need">Post your first need</b><small data-i18n="dashboard.step_need_hint">Ask for local help.</small></span></a><a href="{{ url_for('main.new_offer') }}"><strong>2</strong><span><b data-i18n="dashboard.step_offer">Add an offer</b><small data-i18n="dashboard.step_offer_hint">Share something useful.</small></span></a><a href="{{ url_for('main.nearby') }}"><strong>3</strong><span><b data-i18n="dashboard.step_nearby">Open Nearby</b><small data-i18n="dashboard.step_nearby_hint">Find people close to you.</small></span></a></div></section>
+{% endif %}
+
+<section class="content-width tabs-shell" data-tabs>
+  <div class="tab-list" role="tablist"><button class="tab active" data-tab="needs" role="tab" aria-selected="true" data-i18n="dashboard.needs">My Needs</button><button class="tab" data-tab="offers" role="tab" aria-selected="false" data-i18n="dashboard.offers">My Offers</button><button class="tab" data-tab="matches" role="tab" aria-selected="false" data-i18n="dashboard.matches">Matches{% set unread_total = matches|sum(attribute='unread_messages') %}{% if unread_total %}<span class="tab-unread">{{ unread_total }}</span>{% endif %}</button>{% if offers %}<a class="tab tab-link" href="{{ url_for('main.nearby') }}" data-i18n="nav.nearby">Nearby</a>{% endif %}</div>
+  <div class="tab-panel active" data-panel="needs"><div class="card-grid">{% for item in needs %}<article class="item-card"><div class="card-menu"><button type="button" class="icon-btn btn-small" data-card-menu aria-label="More actions"><svg class="ui-icon" aria-hidden="true"><use href="#icon-search"></use></svg></button><div class="card-menu-pop" hidden><a href="{{ url_for('main.need_detail', need_id=item['id']) }}">View</a><button type="button" data-item-action="close" data-item-type="need" data-item-id="{{ item['id'] }}">Mark fulfilled</button><button type="button" data-item-action="delete" data-item-type="need" data-item-id="{{ item['id'] }}">Delete</button></div></div><div class="card-top"><span class="badge badge-category">{{ item['category'] }}</span><span class="badge badge-{{ item['urgency'] }}">{{ item['urgency']|capitalize }}</span></div><h3><a href="{{ url_for('main.need_detail', need_id=item['id']) }}">{{ item['title'] }}</a></h3><p>{{ item['description'] }}</p><div class="card-meta">{{ item['status']|capitalize }} · {{ item['created_at'][:10] }}</div></article>{% else %}<div class="empty-state"><div class="empty-art"><svg class="ui-icon" aria-hidden="true"><use href="#icon-ripple"></use></svg></div><h3>No needs yet.</h3><p>Post something your circle can help with.</p></div>{% endfor %}</div></div>
+  <div class="tab-panel" data-panel="offers"><div class="card-grid">{% for item in offers %}<article class="item-card"><div class="card-menu"><button type="button" class="icon-btn btn-small" data-card-menu aria-label="More actions"><svg class="ui-icon" aria-hidden="true"><use href="#icon-search"></use></svg></button><div class="card-menu-pop" hidden><a href="{{ url_for('main.offer_detail', offer_id=item['id']) }}">View</a><button type="button" data-item-action="close" data-item-type="offer" data-item-id="{{ item['id'] }}">Mark unavailable</button><button type="button" data-item-action="delete" data-item-type="offer" data-item-id="{{ item['id'] }}">Delete</button></div></div><div class="card-top"><span class="badge badge-category">{{ item['category'] }}</span><span class="badge badge-success">{{ item['status']|capitalize }}</span></div><h3><a href="{{ url_for('main.offer_detail', offer_id=item['id']) }}">{{ item['title'] }}</a></h3><p>{{ item['description'] }}</p><div class="card-meta">{{ item['availability'] }} · {{ item['created_at'][:10] }}</div></article>{% else %}<div class="empty-state"><div class="empty-art"><svg class="ui-icon" aria-hidden="true"><use href="#icon-plus"></use></svg></div><h3>No offers yet.</h3><p>Share a skill, item, ride, or time.</p></div>{% endfor %}</div></div>
+  <div class="tab-panel" data-panel="matches"><div class="card-grid">{% for item in matches %}<article class="item-card"><div class="card-top"><span class="badge badge-category">Match #{{ item['id'] }}</span><span class="badge {% if item['status'] == 'completed' %}badge-success{% else %}badge-medium{% endif %}">{{ item['status'] }}</span></div><h3><a href="{{ url_for('main.match_view', match_id=item['id']) }}">{{ item['need_title'] }}</a></h3><p>{{ item['need_full_name'] }} and {{ item['offer_full_name'] }}</p><div class="card-meta">{{ item['created_at'][:10] }}{% if item['unread_messages'] %} · {{ item['unread_messages'] }} new message{% endif %}</div><div class="browse-card-actions"><a class="btn btn-primary btn-small" href="{{ url_for('main.match_view', match_id=item['id']) }}">Open match</a>{% if item['status'] == 'completed' %}<a class="btn btn-secondary btn-small" href="{{ url_for('main.match_receipt', match_id=item['id']) }}">Receipt</a><button class="btn btn-ghost btn-small" type="button" data-open-rating="{{ item['id'] }}"><svg class="ui-icon" aria-hidden="true"><use href="#icon-star"></use></svg>Rate</button>{% endif %}</div></article>{% else %}<div class="empty-state"><div class="empty-art"><svg class="ui-icon" aria-hidden="true"><use href="#icon-ripple"></use></svg></div><h3>No matches yet.</h3><p>Accept a nearby need or post an offer to make the first overlap.</p></div>{% endfor %}</div></div>
+</section>
+
+<div class="modal-backdrop" id="messageModal" hidden>
+  <div class="modal-card message-modal-card" role="dialog" aria-modal="true" aria-labelledby="messageTitle">
+    <div class="modal-head"><div><span class="eyebrow">MATCH CHAT</span><h2 id="messageTitle">Keep the handoff clear.</h2></div><button class="icon-btn" type="button" data-close-modal aria-label="Close"><svg class="ui-icon" aria-hidden="true"><use href="#icon-x"></use></svg></button></div>
+    <div id="messageList" class="message-list"><div class="mini-empty">Loading messages.</div></div>
+    <form id="messageForm" class="message-form">
+      <textarea id="messageBody" name="body" rows="2" maxlength="1000" placeholder="Write a message…" aria-label="Write a message" aria-describedby="messageBodyCount" required></textarea>
+      <div class="message-form-row"><span class="char-count" id="messageBodyCount" data-for="messageBody">0/1000</span><button class="btn btn-primary" type="submit">Send</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="ratingModal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="ratingTitle">
+    <div class="modal-head"><div><span class="eyebrow">RATE</span><h2 id="ratingTitle">How did it go?</h2></div><button class="icon-btn" type="button" data-close-modal aria-label="Close"><svg class="ui-icon" aria-hidden="true"><use href="#icon-x"></use></svg></button></div>
+    <form class="form-stack" id="ratingForm">
+      <input type="hidden" id="ratingMatchId">
+      <input type="hidden" id="ratingStars" value="5">
+      <label class="sr-only" for="ratingStarsLegacy">Stars</label><select id="ratingStarsLegacy" name="dashboard-stars" class="sr-only" tabindex="-1" aria-hidden="true">{% for star in [5,4,3,2,1] %}<option value="{{ star }}">{{ star }}</option>{% endfor %}</select>
+      <div class="rating-stars dashboard-rating-stars" role="radiogroup" aria-label="Rating from 1 to 5 stars">{% for star in [1,2,3,4,5] %}<label><input type="radio" name="rating_visual" value="{{ star }}"{% if star == 5 %} checked{% endif %} aria-label="{{ star }} stars"><svg class="ui-icon" aria-hidden="true"><use href="#icon-star"></use></svg></label>{% endfor %}</div>
+      <div class="rating-tags" role="group" aria-label="Quick rating tags"><button type="button" data-dashboard-rating-tag="On time">On time</button><button type="button" data-dashboard-rating-tag="Friendly">Friendly</button><button type="button" data-dashboard-rating-tag="Great work">Great work</button></div>
+      <label for="ratingComment">Comment<textarea id="ratingComment" rows="4" maxlength="500" placeholder="Optional comment"></textarea></label>
+      <button class="btn btn-primary" type="submit">Submit rating</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>window.SHARECIRCLE_USER_ID={{ current_user['id'] }}; window.SHARECIRCLE_ACTIVE_MATCH_ID={{ active_match['id'] if active_match else 'null' }};</script><script src="{{ url_for('static', filename='js/dashboard.js') }}" defer></script>{% endblock %}

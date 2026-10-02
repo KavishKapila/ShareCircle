@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Impact Receipt — ShareCircle{% endblock %}
+{% block content %}
+<section class="receipt-shell content-width">
+  <div class="receipt-toolbar"><a class="btn btn-ghost btn-small" href="{{ url_for('main.match_view', match_id=match['id']) }}"><svg class="ui-icon" aria-hidden="true"><use href="#icon-arrow"></use></svg><span data-i18n="receipt.back">Back to match</span></a><div><button class="btn btn-secondary btn-small" id="shareReceipt" data-share-url="{{ verify_url|e }}" type="button"><svg class="ui-icon" aria-hidden="true"><use href="#icon-share"></use></svg><span data-i18n="receipt.share_button">Share receipt</span></button><button class="btn btn-primary btn-small" type="button" onclick="window.print()" data-i18n="receipt.print">Print / Save as PDF</button></div></div>
+  <article class="receipt-paper" id="impactReceipt">
+    <header class="receipt-head"><div><span class="receipt-kicker" data-i18n="receipt.eyebrow">SHARECIRCLE · COMMUNITY IMPACT</span><h1 data-i18n="receipt.title">Impact Receipt</h1></div><div class="receipt-stamp">DONE<span>पूर्ण</span></div></header>
+    <div class="receipt-overlap" aria-hidden="true"><span class="receipt-lens"></span></div>
+    <p class="receipt-kicker">{{ receipt_code }}</p>
+    <div class="receipt-grid">
+      <div><span data-i18n="receipt.match">Match</span><strong>#{{ match['id'] }}</strong></div><div><span data-i18n="receipt.completed">Completed</span><strong>{{ completed_date }}</strong></div>
+      <div><span data-i18n="receipt.need_owner">Need owner</span><strong>{{ match['need_full_name'] }}</strong></div><div><span data-i18n="receipt.helper">Helper</span><strong>{{ match['offer_full_name'] }}</strong></div>
+      <div><span data-i18n="receipt.need">Need</span><strong>{{ match['need_title'] }}</strong></div><div><span data-i18n="receipt.category">Category</span><strong>{{ match['need_category'] }}</strong></div>
+      <div><span data-i18n="receipt.amount">Amount recorded</span><strong>₹{{ '%.2f'|format(match['amount_paid'] or 0) }}</strong></div><div><span data-i18n="receipt.impact_points">Impact Points</span><strong>+{{ need_owner_points }} / +{{ helper_points }}</strong></div>
+    </div>
+    <div class="receipt-footer"><span data-i18n="receipt.thanks">Thank you for turning a neighborhood need into a completed match.</span><span data-i18n="receipt.share">Keep this receipt as a simple, tangible record of community impact.</span></div>
+  </article>
+  <div class="mini-empty" style="max-width:720px;margin:2rem auto 0;text-align:center">Public verification: <a class="text-link" href="{{ verify_url }}">{{ receipt_code }}</a></div>
+</section>
+{% endblock %}
+

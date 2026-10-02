@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}ShareCircle — Local help that connects{% endblock %}
+{% block content %}
+<section class="hero-shell">
+  <div class="hero-copy">
+    <span class="eyebrow light" data-i18n="home.eyebrow">NEIGHBORHOOD POWERED</span>
+    <h1 data-i18n="home.title">Help moves when people overlap.</h1>
+    <p data-i18n="home.subtitle">Post a need. Share what you can. Meet a neighbor and make the help real.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary btn-large hero-primary" href="{{ url_for('auth.signup') }}" data-i18n="home.cta">Join the circle</a>
+    </div>
+    <div class="hero-trust"><span data-i18n="home.trust.free">Free to use</span><span data-i18n="home.trust.otp">Verified by OTP</span><span data-i18n="home.trust.private">Private until matched</span></div>
+  </div>
+  <div class="hero-ripple-wrap" data-ripple-scene data-seed="home">
+    <canvas id="heroRippleCanvas" aria-label="Interactive ShareCircle neighborhood ripple. Move or touch to wake nearby neighbor dots."></canvas>
+    <div class="hero-center-label" aria-hidden="true">SC</div>
+    <p class="hero-caption" data-i18n="home.ripple_hint">Move. Tap. Watch the circle respond.</p>
+  </div>
+</section>
+
+<section class="stats-grid content-width" id="homeStats" aria-label="Community stats">
+  <article class="stat-card"><span data-i18n="stats.members">Members</span><strong class="counter" data-stat="members" data-counter="{{ stats.members }}">{{ '{:,}'.format(stats.members) }}</strong><small data-i18n="home.stats.members_hint">neighbors in the circle</small></article>
+  <article class="stat-card"><span data-i18n="stats.needs">Needs</span><strong class="counter" data-stat="needs" data-counter="{{ stats.needs }}">{{ '{:,}'.format(stats.needs) }}</strong><small data-i18n="home.stats.needs_hint">requests shared with the circle</small></article>
+  <article class="stat-card"><span data-i18n="stats.offers">Offers</span><strong class="counter" data-stat="offers" data-counter="{{ stats.offers }}">{{ '{:,}'.format(stats.offers) }}</strong><small data-i18n="home.stats.offers_hint">skills ready to share</small></article>
+  <article class="stat-card"><span data-i18n="stats.completed">Completed</span><strong class="counter" data-stat="completed" data-counter="{{ stats.completed }}">{{ '{:,}'.format(stats.completed) }}</strong><small data-i18n="home.stats.completed_hint">real-world helps delivered</small></article>
+</section>
+
+<section class="social-proof-grid content-width">
+  <article class="proof-card">
+    <div class="section-heading compact"><div><span class="eyebrow" data-i18n="home.completed.eyebrow">RECENTLY COMPLETED</span><h2 data-i18n="home.completed.title">Real help, recently delivered.</h2></div></div>
+    <div class="proof-ticker" aria-label="Recently completed matches">
+      {% for item in recent_completed %}<span class="proof-ticker-item"><strong>{{ item['need_title'] }}</strong><span>matched with {{ item['offer_title'] }}</span></span>{% else %}<span class="proof-empty" data-i18n="home.completed.empty">Your first completed match will appear here.</span>{% endfor %}
+    </div>
+  </article>
+  <article class="proof-card">
+    <div class="section-heading compact"><div><span class="eyebrow" data-i18n="home.open.eyebrow">OPEN IN THE CIRCLE</span><h2 data-i18n="home.open.title">Needs neighbors can see now.</h2></div><a class="text-link" href="{{ url_for('main.browse') }}" data-i18n="home.open.link">Browse all</a></div>
+    <div class="open-needs-list">{% for item in recent_needs[:3] %}<a class="open-need-row" href="{{ url_for('main.need_detail', need_id=item['id']) }}"><span class="badge badge-category">{{ item['category'] }}</span><span><strong>{{ item['title'] }}</strong><small>{{ item['location'] }} · {{ item['urgency']|capitalize }} urgency · ₹{{ '%.0f'|format(item['price'] or 0) }}</small></span></a>{% else %}<span class="proof-empty" data-i18n="home.open.empty">No open needs yet. Be the first to post one.</span>{% endfor %}</div>
+  </article>
+</section>
+
+<section class="section-shell content-width">
+  <div class="section-heading"><div><span class="eyebrow" data-i18n="home.how.eyebrow">HOW IT WORKS</span><h2 data-i18n="home.how.title">Four moves. One visible act of help.</h2></div></div>
+  <div class="feature-grid">
+    <article class="feature-card"><span class="feature-icon">1</span><h3 data-i18n="home.how.one">Post a need</h3><p data-i18n="home.how.one_copy">Share what would make your week easier, from tutoring to transport.</p></article>
+    <article class="feature-card"><span class="feature-icon">2</span><h3 data-i18n="home.how.two">Find your overlap</h3><p data-i18n="home.how.two_copy">Nearby matches appear around you, with reasons you can understand.</p></article>
+    <article class="feature-card"><span class="feature-icon">3</span><h3 data-i18n="home.how.three">Move together</h3><p data-i18n="home.how.three_copy">Accepted, arrived, paid. The circles draw closer as the real-world help happens.</p></article>
+    <article class="feature-card"><span class="feature-icon">4</span><h3 data-i18n="home.how.four">Leave a mark</h3><p data-i18n="home.how.four_copy">OTP verifies the handoff. Points and a shareable receipt make the impact visible.</p></article>
+  </div>
+</section>
+
+<section class="cta-band content-width"><div><span class="eyebrow" data-i18n="home.ready.eyebrow">READY TO HELP?</span><h2 data-i18n="home.ready.title">Start with one small overlap.</h2></div><a class="btn btn-primary" href="{{ url_for('auth.signup') }}" data-i18n="home.ready.cta">Create your profile</a></section>
+{% endblock %}
+

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Judge Mode — ShareCircle{% endblock %}
+{% block content %}
+<section class="judge-hero content-width">
+  <span class="eyebrow">FOR DEMO REVIEW</span>
+  <h1>Watch the whole overlap happen in one minute.</h1>
+  <p>Judge Mode is deliberately outside the primary navigation. It creates two demo neighbors and walks the lifecycle from accepted to rated without a second device.</p>
+  <div class="judge-controls">
+    <button class="btn btn-primary btn-large" id="judgeStartBtn" type="button"><svg class="ui-icon" aria-hidden="true"><use href="#icon-play"></use></svg> Run the demo</button>
+    <button class="btn btn-secondary" id="judgeResetBtn" type="button" hidden><svg class="ui-icon" aria-hidden="true"><use href="#icon-ripple"></use></svg> Run again</button>
+  </div>
+</section>
+<section class="content-width judge-stage" id="judgeStage" hidden>
+  <div class="match-live-status" aria-live="polite"><span class="live-dot" aria-hidden="true"></span><strong>Live</strong><span>demo state</span></div>
+  <div class="match-progress" id="judgeProgress" aria-label="Demo progress">
+    <span data-step="accepted">Accepted<small></small></span><span data-step="arrived">Arrived<small></small></span><span data-step="paid">Paid<small></small></span><span data-step="completed">Completed<small></small></span><span data-step="rated">Rated<small></small></span>
+  </div>
+  <div class="judge-narration" id="judgeNarration" aria-live="polite">Getting the demo neighbors ready.</div>
+  <div class="judge-grid">
+    <article class="judge-panel" id="judgePanelOwner">
+      <header><span class="avatar" data-avatar="judge_owner">P</span><div><strong>Priya Sharma</strong><span class="muted">Need owner</span></div></header>
+      <div class="judge-panel-body" id="judgeOwnerBody"><div class="skeleton skeleton-block"></div></div>
+    </article>
+    <div class="judge-link" aria-hidden="true"><span class="judge-link-line"></span><span class="judge-link-badge" id="judgeLinkBadge"><svg class="ui-icon" aria-hidden="true"><use href="#icon-ripple"></use></svg></span><span class="judge-link-line"></span></div>
+    <article class="judge-panel" id="judgePanelHelper">
+      <header><span class="avatar" data-avatar="judge_helper">A</span><div><strong>Arjun Verma</strong><span class="muted">Helper</span></div></header>
+      <div class="judge-panel-body" id="judgeHelperBody"><div class="skeleton skeleton-block"></div></div>
+    </article>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/judge.js') }}" defer></script>{% endblock %}

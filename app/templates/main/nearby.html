@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Nearby Needs — ShareCircle{% endblock %}
+{% block content %}
+<section class="nearby-hero content-width">
+  <div><span class="eyebrow" data-i18n="nearby.eyebrow">YOUR LOCAL CIRCLE</span><h1 data-i18n="nearby.title">Needs inside your radius.</h1><p data-i18n="nearby.subtitle">Tap a signal to see the need, or use the accessible list below.</p></div>
+  <a class="btn btn-secondary" href="{{ url_for('main.new_offer') }}" data-i18n="nearby.add_offer">Add another offer</a>
+</section>
+<section class="content-width nearby-shell" data-nearby-page>
+  <div class="nearby-toolbar">
+    <div class="nearby-location-tools">
+      <button class="location-chip" id="locationChip" type="button" aria-expanded="false" aria-controls="locationEditor"><svg class="ui-icon" aria-hidden="true"><use href="#icon-pin"></use></svg><strong id="nearbyLocationChip">{{ current_user['location'] or 'Choose location' }}</strong><span data-i18n="nearby.change">Change</span></button>
+      <div class="location-editor" id="locationEditor" hidden>
+        <span class="nearby-location-status" data-i18n="nearby.manual_hint">Manual mode never needs browser permission.</span>
+        <form id="manualLocationForm" class="manual-location-form" novalidate>
+          <input id="manualLocationInput" name="location" type="text" maxlength="120" value="{{ current_user['location']|e }}" autocomplete="address-level2" placeholder="e.g. Rajpur Road, Dehradun" aria-label="Enter location manually" aria-describedby="nearbyLocationError" required>
+          <button class="btn btn-secondary btn-small" type="submit" data-i18n="location.save">Save location</button>
+          <button class="btn btn-ghost btn-small" id="deviceLocationButton" type="button" data-i18n="location.use">Use my location</button>
+          <small class="field-error" id="nearbyLocationError"></small>
+        </form>
+      </div>
+      <span class="nearby-location-status" id="nearbyLocationStatus" aria-live="polite" data-i18n="nearby.ready">Ready to find nearby needs</span>
+    </div>
+    <div class="radius-pills" role="group" aria-label="Search radius">
+      {% for radius in [1,5,10,25] %}<button type="button" class="radius-pill{% if radius == 10 %} active{% endif %}" data-radius="{{ radius }}">{{ radius }} km</button>{% endfor %}
+    </div>
+  </div>
+  <div class="category-strip"><span data-i18n="nearby.you_offer">You offer:</span>{% if offer_categories %}{% for category in offer_categories %}<span class="badge badge-category">{{ category }}</span>{% endfor %}{% else %}<span class="muted" data-i18n="nearby.offer_hint">Post an offer to unlock nearby matching needs.</span>{% endif %}</div>
+
+  <div class="nearby-view-switch" role="tablist" aria-label="Nearby view">
+    <button class="view-switch active" type="button" data-nearby-view="list" role="tab" aria-selected="true" data-i18n="nearby.list_view">List</button>
+    <button class="view-switch" type="button" data-nearby-view="radar" role="tab" aria-selected="false" data-i18n="nearby.circle_view">Circle field</button>
+
+  </div>
+
+  <div class="radar-wrap" id="nearbyRadarWrap" hidden>
+    <div class="radar-shell" id="radarShell" aria-label="Nearby needs by distance">
+      <div class="radar-world" aria-hidden="true">
+        <svg viewBox="0 0 900 520" preserveAspectRatio="xMidYMid meet" role="presentation">
+          <path d="M66 128l40-31 66-13 54 18 35 42-18 31-45 8-23 34-43 5-31-28-35-8zM185 220l48-7 38 26 8 48-24 42-24 55-29-6-10-49-27-29 9-41zM329 118l39-21 54 7 35 27-22 23-43-7-26 20-38-18zM385 184l41-17 49 9 25 31-18 24-30-7-20 21-38-15-25-25zM468 269l46-28 50 7 29 31-20 29-52 3-29-18zM564 130l36-20 55 8 45 30 8 28-35 10-31-22-45 8-26-17zM628 197l39-10 35 19 18 37-28 15-32-20-37 2-19-21zM711 280l42-12 40 20 15 35-23 23-43-8-33-26zM593 320l42-9 47 24 19 35-29 21-44-8-31-27zM490 350l48-7 26 27-12 38-39 15-35-25z"/>
+        </svg>
+      </div>
+      <div class="radar-sweep" aria-hidden="true"></div>
+      <div class="radar-rings" aria-hidden="true"></div>
+      <div class="radar-ring-labels" aria-hidden="true"><span class="ring-label-1">1 km</span><span class="ring-label-5">5 km</span><span class="ring-label-10">10 km</span><span class="ring-label-25">25 km</span></div>
+      <div class="radar-center" aria-hidden="true">YOU</div>
+      <div class="radar-dots" id="radarDots"></div>
+    </div>
+    <div class="radar-legend"><span><i class="radar-dot-high"></i><span data-i18n="urgency.high">High</span></span><span><i class="radar-dot-medium"></i><span data-i18n="urgency.medium">Medium</span></span><span><i class="radar-dot-low"></i><span data-i18n="urgency.low">Low</span></span></div>
+  </div>
+  <div class="nearby-list" id="nearbyList" aria-live="polite"><div class="nearby-loading"><div class="skeleton nearby-skeleton"></div><div class="skeleton nearby-skeleton"></div><div class="skeleton nearby-skeleton"></div></div></div>
+</section>
+{% endblock %}
+{% block scripts %}<script>window.SHARECIRCLE_CURRENT_USER_ID={{ current_user['id'] }};window.SHARECIRCLE_INITIAL_LOCATION={{ current_user['location']|tojson }};window.SHARECIRCLE_HAS_COORDS={{ (current_user['lat'] is not none and current_user['lng'] is not none)|tojson }};window.SHARECIRCLE_INITIAL_LAT={{ current_user['lat']|tojson }};window.SHARECIRCLE_INITIAL_LNG={{ current_user['lng']|tojson }};</script><script src="{{ url_for('static', filename='js/nearby.js') }}" defer></script>{% endblock %}

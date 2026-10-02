@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}Page not found — ShareCircle{% endblock %}
+{% block content %}
+<section class="error-shell content-width" style="min-height:70vh;display:grid;place-items:center;text-align:center"><div><div class="empty-art" style="width:7rem;height:7rem;font-family:var(--sc-display);font-size:1.7rem">404</div><span class="eyebrow">WRONG TURN</span><h1 class="display" style="font-size:clamp(3rem,8vw,6rem);margin:.6rem 0 .4rem">This page wandered outside the circle.</h1><p class="muted">Let’s get you back to something useful.</p><a class="btn btn-primary" href="{{ url_for('main.home') }}">Return home</a></div></section>
+{% endblock %}

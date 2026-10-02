@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Log in — ShareCircle{% endblock %}
+{% block content %}
+<section class="auth-shell"><div class="auth-card">
+  <span class="eyebrow" data-i18n="auth.login.eyebrow">WELCOME BACK</span><h1 data-i18n="auth.login.title">Log in to your circle.</h1><p data-i18n="auth.login.subtitle">Use your username or email.</p>
+  <form method="post" class="form-stack" id="loginForm" autocomplete="off" novalidate>
+    <label><span data-i18n="auth.identifier">Username or email</span><input name="identifier" autocomplete="off" autocapitalize="none" spellcheck="false" required aria-describedby="identifierError"><small class="field-error" id="identifierError">{{ field_errors.get('identifier', '') if field_errors else '' }}</small></label>
+    <label><span data-i18n="auth.password">Password</span><div class="password-wrap"><input name="password" id="loginPassword" type="password" autocomplete="new-password" minlength="6" required aria-describedby="loginPasswordError"><button type="button" class="password-toggle" data-toggle-password="loginPassword" aria-label="Show password">Show</button></div><small class="field-error" id="loginPasswordError"></small></label>
+    <div class="login-options"><label class="check-label"><input type="checkbox" name="remember" value="1"> <span data-i18n="auth.remember">Keep me signed in</span></label><a href="{{ url_for('auth.forgot_password') }}" data-i18n="auth.forgot">Forgot password?</a></div>
+    <button class="btn btn-primary btn-large" type="submit" data-i18n="auth.login.submit">Log in</button>
+  </form>
+  <p class="auth-switch"><span data-i18n="auth.new_here">New here?</span> <a href="{{ url_for('auth.signup') }}" data-i18n="auth.create">Create an account</a></p><a class="browse-link" href="{{ url_for('main.browse') }}" data-i18n="auth.browse">Continue browsing</a>
+</div></section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/forms.js') }}" defer></script>{% endblock %}

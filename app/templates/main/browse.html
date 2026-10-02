@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Browse — ShareCircle{% endblock %}
+{% block content %}
+<section class="page-heading content-width"><span class="eyebrow" data-i18n="browse.eyebrow">THE CIRCLE BOARD</span><h1 data-i18n="browse.title">See what your neighborhood can share.</h1><p data-i18n="browse.subtitle">Search public needs and offers. Category and urgency stay one tap away.</p></section>
+<section class="content-width browse-shell" data-browse>
+  <div class="browse-tabs" role="tablist"><button class="browse-tab active" type="button" data-browse-tab="needs" role="tab" aria-selected="true" data-i18n="browse.needs">Needs</button><button class="browse-tab" type="button" data-browse-tab="offers" role="tab" aria-selected="false" data-i18n="browse.offers">Offers</button></div>
+  <div class="browse-toolbar">
+    <input id="browseSearch" type="search" placeholder="Search needs, skills, places…" aria-label="Search">
+    <select id="browseCategory" aria-label="Category" class="sr-only"><option value="">All categories</option>{% for cat in categories %}<option value="{{ cat }}">{{ cat }}</option>{% endfor %}</select>
+    <select id="browseUrgency" aria-label="Urgency" class="sr-only"><option value="">Any urgency</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select>
+    <select id="browseSort" aria-label="Sort"><option value="newest">Newest</option><option value="matched">Most active</option></select>
+  </div>
+  <div class="filter-row" aria-label="Category filters"><span class="eyebrow" data-i18n="browse.category">CATEGORY</span><button class="filter-chip active" type="button" data-category-chip="" aria-pressed="true" data-i18n="browse.all">All</button>{% for cat in categories %}<button class="filter-chip" type="button" data-category-chip="{{ cat }}" aria-pressed="false">{{ cat }}</button>{% endfor %}</div>
+  <div class="filter-row urgency-filter-row" aria-label="Urgency filters"><span class="eyebrow" data-i18n="browse.urgency">URGENCY</span><button class="filter-chip active" type="button" data-urgency-chip="" aria-pressed="true" data-i18n="browse.any">Any</button><button class="filter-chip" type="button" data-urgency-chip="low" aria-pressed="false">Low</button><button class="filter-chip" type="button" data-urgency-chip="medium" aria-pressed="false">Medium</button><button class="filter-chip" type="button" data-urgency-chip="high" aria-pressed="false">High</button></div>
+  <div class="filter-row" id="browseFilterChips" aria-live="polite"></div>
+  <div class="browse-results-head"><span id="browseResultCount" class="muted">Loading results…</span><button id="browseLoadMore" class="btn btn-secondary btn-small" type="button" hidden data-i18n="browse.load_more">Load more</button></div>
+  <div id="browseGrid" class="card-grid" aria-live="polite"><div class="card-skeleton-grid"><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div></div></div>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/browse.js') }}" defer></script>{% endblock %}

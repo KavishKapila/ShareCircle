@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Match #{{ match['id'] }} — ShareCircle{% endblock %}
+{% block content %}
+<section class="match-page content-width" id="matchPage" data-match-id="{{ match['id'] }}" data-viewer-role="{% if match['need_user_id'] == current_user['id'] %}need_owner{% else %}offerer{% endif %}">
+  <div class="match-page-top"><a href="{{ url_for('main.dashboard') }}" class="btn btn-ghost btn-small"><svg class="ui-icon" aria-hidden="true"><use href="#icon-arrow"></use></svg><span data-i18n="match.back">Dashboard</span></a><span class="eyebrow">MATCH #{{ match['id'] }}</span></div>
+  <div class="match-live-status" id="matchLiveStatus" aria-live="polite"><span class="live-dot" aria-hidden="true"></span><strong data-i18n="live.label">Live</strong><span data-i18n="live.updated">updated just now</span></div>
+  <div class="match-progress" aria-label="Match progress"><span data-step="accepted">Accepted<small></small></span><span data-step="arrived">Arrived<small></small></span><span data-step="paid">Paid<small></small></span><span data-step="completed">Completed<small></small></span></div>
+  <div class="match-page-grid">
+    <main>
+      <section class="match-state-card" id="matchStateCard" aria-live="polite"><div class="skeleton skeleton-block"></div></section>
+      <section class="match-state-card match-inline-chat" aria-labelledby="inlineChatTitle"><div class="inline-chat-head"><div><span class="eyebrow" data-i18n="match.chat_eyebrow">MATCH CHAT</span><h2 id="inlineChatTitle" data-i18n="match.chat_title">Keep the handoff clear.</h2></div><span class="muted" data-i18n="live.messages">Messages update live</span></div><div id="inlineMessageList" class="message-list inline-message-list"><div class="mini-empty" data-i18n="match.chat_loading">Loading messages…</div></div><form id="inlineMessageForm" class="message-form"><textarea id="inlineMessageBody" rows="2" maxlength="1000" placeholder="Write a message…" aria-label="Write a message" required></textarea><button class="btn btn-primary btn-small" type="submit" data-i18n="match.send">Send</button></form></section>
+    </main>
+    <aside class="match-context-card">
+      <div class="match-context-head"><span class="eyebrow" data-i18n="match.job">THE JOB</span><span class="badge badge-category">{{ match['need_category'] }}</span></div>
+      <h2>{{ match['need_title'] }}</h2><p>{{ match['need_description'] }}</p>
+      <div class="match-person"><span class="avatar" data-avatar="{{ match['need_username'] }}">{{ match['need_full_name'][:1] }}</span><div><span data-i18n="match.need_owner">Need owner</span><a href="{{ url_for('main.profile', username=match['need_username']) }}">{{ match['need_full_name'] }}</a></div></div>
+      <div class="match-person"><span class="avatar" data-avatar="{{ match['offer_username'] }}">{{ match['offer_full_name'][:1] }}</span><div><span data-i18n="match.helper">Helper</span><a href="{{ url_for('main.profile', username=match['offer_username']) }}">{{ match['offer_full_name'] }}</a></div></div>
+      <div class="match-context-meta"><span>{{ match['need_location'] or 'Nearby' }}</span><span>{{ match['need_urgency']|capitalize }} urgency</span>{% if match['need_lat'] is not none and match['need_lng'] is not none %}<a class="btn btn-secondary btn-small" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/dir/?api=1&amp;destination={{ match['need_lat'] }},{{ match['need_lng'] }}" data-i18n="match.directions">Open directions</a>{% endif %}</div>
+    </aside>
+  </div>
+  <section class="match-safety-card"><strong data-i18n="match.safety">Safety first</strong><span data-i18n="match.safety_copy">Meet in a public place, share your trip, and keep payment details private.</span><div><a class="btn btn-secondary btn-small" href="#" id="shareTripLink" data-i18n="match.share_trip">Share my trip</a><button class="btn btn-ghost btn-small" type="button" id="reportMatchButton" data-i18n="match.report">Report / Block</button></div></section>
+</section>
+{% endblock %}
+{% block scripts %}<script>window.SHARECIRCLE_MATCH_ID={{ match['id'] }};window.SHARECIRCLE_MATCH_USER_ID={{ current_user['id'] }};</script><script src="{{ url_for('static', filename='js/match.js') }}" defer></script>{% endblock %}

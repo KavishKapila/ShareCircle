@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Post a Need — ShareCircle{% endblock %}
+{% block content %}
+<section class="form-page-shell content-width">
+  <div class="form-card">
+    <span class="eyebrow" data-i18n="form.need.eyebrow">ASK YOUR CIRCLE</span>
+    <h1 data-i18n="form.need.title">Post a Need</h1>
+    <p data-i18n="form.need.subtitle">Be specific enough for a good match, but keep it human.</p>
+    <form id="needForm" class="form-stack" novalidate>
+      <label><span data-i18n="form.title">Title</span><input name="title" id="needTitle" maxlength="100" required placeholder="Need a math tutor for my sister" aria-describedby="needTitleError needTitleCount"><small class="char-count" id="needTitleCount">0/100</small><small class="field-error" id="needTitleError"></small></label>
+      <label><span data-i18n="form.description">Description</span><textarea name="description" id="needDescription" rows="6" maxlength="1000" required placeholder="Share what is needed, when, and any useful context." aria-describedby="needDescriptionCount needDescriptionError"></textarea><small class="char-count" id="needDescriptionCount">0/1000</small><small class="field-error" id="needDescriptionError"></small></label>
+      <div class="price-field-wrap">
+        <label class="price-field"><span data-i18n="form.price">Price</span><div class="currency-input"><span aria-hidden="true">₹</span><input name="price" id="needPrice" type="number" min="1" max="1000000" step="1" inputmode="numeric" required placeholder="e.g. 250" aria-describedby="needPriceHint needPriceError"></div><small id="needPriceHint" class="field-hint" data-i18n="form.price_hint">Set the amount the helper should expect for this need. This is shown before someone accepts.</small><small class="field-error" id="needPriceError"></small></label>
+      </div>
+      <fieldset class="choice-group time-window-group">
+        <legend>When do you need it?</legend>
+        <p class="field-hint">Set a time buffer so helpers know exactly when you need help. AM/PM is required.</p>
+        <div class="time-window-grid">
+          <label><span>From</span><div class="time-input"><input name="start_time" id="needStartTime" type="text" required inputmode="numeric" autocomplete="off" placeholder="4:00" pattern="(0?[1-9]|1[0-2]):[0-5][0-9]" title="Enter a time like 4:00"><select name="start_meridiem" id="needStartMeridiem" aria-label="Start AM or PM"><option value="AM">AM</option><option value="PM">PM</option></select></div><small class="field-error" id="needStartTimeError"></small></label>
+          <span class="time-arrow" aria-hidden="true">→</span>
+          <label><span>Until</span><div class="time-input"><input name="end_time" id="needEndTime" type="text" required inputmode="numeric" autocomplete="off" placeholder="7:00" pattern="(0?[1-9]|1[0-2]):[0-5][0-9]" title="Enter a time like 7:00"><select name="end_meridiem" id="needEndMeridiem" aria-label="End AM or PM"><option value="AM">AM</option><option value="PM" selected>PM</option></select></div><small class="field-error" id="needEndTimeError"></small></label>
+        </div>
+        <small class="field-hint">Example: <strong>4:00 PM → 7:00 PM</strong></small>
+      </fieldset>
+      <div class="form-choice-grid">
+        <fieldset class="choice-group"><legend data-i18n="form.category">Category</legend><div class="choice-grid category-grid">
+          {% for cat in categories %}<label class="choice-card"><input type="radio" name="category" value="{{ cat }}" required><span class="choice-icon" aria-hidden="true"><svg class="ui-icon"><use href="#icon-ripple"></use></svg></span><span>{{ cat }}</span></label>{% endfor %}
+        </div></fieldset>
+        <fieldset class="choice-group"><legend data-i18n="form.urgency">Urgency</legend><div class="segmented-control">
+          {% for value, label in [('low','Low'),('medium','Medium'),('high','High')] %}<label class="segment segment-{{ value }}"><input type="radio" name="urgency" value="{{ value }}" required><span data-i18n="urgency.{{ value }}">{{ label }}</span></label>{% endfor %}
+        </div></fieldset>
+      </div>
+      <div class="location-picker">
+        <div class="location-picker-head"><div><strong data-i18n="location.title">Add a location</strong><small data-i18n="location.subtitle">Use your device coordinates or type an area. ShareCircle never silently requests location.</small></div></div>
+        <div class="location-picker-actions"><button class="btn btn-secondary btn-small" type="button" data-use-location data-i18n="location.use">Use my location</button><button class="btn btn-ghost btn-small" type="button" data-clear-location data-i18n="location.clear">Clear</button></div>
+        <label class="location-field-label"><span data-i18n="location.area">Area</span><input name="location" maxlength="120" autocomplete="address-level2" placeholder="e.g. Rajpur Road, Dehradun" aria-describedby="needLocationError"><small class="field-error" id="needLocationError"></small></label>
+        <span class="location-status location-status-muted" data-location-status data-i18n="location.none">No location added. You can still publish this post.</span>
+      </div>
+      <input type="hidden" name="lat"><input type="hidden" name="lng">
+      <div class="form-insight" data-form-insight hidden><strong data-helper-count>Matching helpers nearby: —</strong><small data-suggestion></small></div>
+      <small class="field-error" data-form-error></small>
+      <button class="btn btn-primary btn-large" type="submit" data-submit-label="Publish need" data-i18n="form.need.submit">Publish need</button>
+    </form>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/forms.js') }}" defer></script>{% endblock %}

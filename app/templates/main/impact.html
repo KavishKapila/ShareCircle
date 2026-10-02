@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Impact — ShareCircle{% endblock %}
+{% block content %}
+<section class="impact-hero content-width">
+  <div>
+    <span class="eyebrow" data-i18n="impact.eyebrow">COMMUNITY IMPACT</span>
+    <h1 data-i18n="impact.title">One completed match becomes one more mark on the neighborhood.</h1>
+    <p data-i18n="impact.subtitle">Live platform totals, rendered as a living rangoli of completed help.</p>
+  </div>
+  <div class="impact-total" data-impact-total tabindex="0" role="img" aria-label="{{ stats.completed }} completed matches">
+    <div class="impact-ring-wrap" aria-hidden="true">
+      <span class="impact-ring-number" data-counter="{{ stats.completed }}">{{ stats.completed }}</span>
+    </div>
+    <span class="impact-total-label" data-i18n="stats.completed">completed</span>
+  </div>
+</section>
+<section class="content-width impact-grid">
+  <article class="impact-panel"><div class="section-heading compact"><div><span class="eyebrow" data-i18n="impact.completed.eyebrow">WHERE HELP LANDS</span><h2 data-i18n="impact.completed.title">Top categories by completed matches</h2></div></div>{% if categories %}<div class="supply-list">{% for row in categories %}<div class="supply-row"><strong>{{ row['category'] }}</strong><div class="supply-bar"><i style="--ratio:{{ ((row['total'] / categories[0]['total']) * 100 if categories[0]['total'] else 0)|round(1) }}%"></i></div><span class="supply-meta" data-i18n-count="{{ row['total'] }}">{{ row['total'] }}</span></div>{% endfor %}</div>{% else %}<div class="empty-state"><div class="empty-art"><svg class="ui-icon" aria-hidden="true"><use href="#icon-ripple"></use></svg></div><h3 data-i18n="impact.completed.empty">Complete your first match to light up the chart.</h3></div>{% endif %}</article>
+  <article class="impact-panel"><div class="section-heading compact"><div><span class="eyebrow" data-i18n="impact.rangoli.eyebrow">THE COMMUNITY RANGOLI</span><h2 data-i18n="impact.rangoli.title">Every help leaves a petal.</h2></div></div><div class="rangoli-wrap"><svg id="impactRangoli" data-completed="{{ stats.completed }}" viewBox="0 0 500 500" role="img" aria-label="Community rangoli generated from completed matches"></svg></div><p class="rangoli-caption" id="rangoliCaption">{{ stats.completed }} completed match{{ '' if stats.completed == 1 else 'es' }} · {{ stats.points }} Impact Points across the circle</p></article>
+</section>
+<section class="content-width impact-panel" style="margin-bottom:4rem"><div class="section-heading compact"><div><span class="eyebrow" data-i18n="impact.supply.eyebrow">SUPPLY &amp; DEMAND</span><h2 data-i18n="impact.supply.title">Where the circle needs more hands.</h2><p class="muted" data-i18n="impact.supply.subtitle">Open needs compared with available offers, by category.</p></div></div>{% if supply_demand %}<div class="supply-list">{% for row in supply_demand %}<div class="supply-row" data-ratio="{{ row['ratio'] if row['ratio'] is not none else '' }}"><strong>{{ row['category'] }}</strong><div class="supply-bar"><i style="--ratio:{{ row['coverage_percent'] }}%"></i></div><span class="supply-meta">{{ row['needs'] }} needs · {{ row['offers'] }} offers</span></div>{% endfor %}</div>{% else %}<div class="mini-empty" data-i18n="impact.supply.empty">Post a need or offer to populate this live gauge.</div>{% endif %}</section>
+{% endblock %}
+

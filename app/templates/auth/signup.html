@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Join ShareCircle{% endblock %}
+{% block content %}
+<section class="auth-shell"><div class="auth-card wide">
+  <span class="eyebrow" data-i18n="auth.signup.eyebrow">JOIN THE CIRCLE</span><h1 data-i18n="auth.signup.title">Create your profile.</h1><p data-i18n="auth.signup.subtitle">A few basics, then you can start asking and offering.</p>
+  <form method="post" class="form-stack" id="signupForm" novalidate>
+    <div class="signup-step current" data-signup-step="1">
+      <div class="two-col">
+        <label><span data-i18n="auth.full_name">Full name</span><input name="full_name" autocomplete="name" minlength="2" required aria-describedby="fullNameError"><small class="field-error" id="fullNameError">{{ field_errors.get('full_name', '') if field_errors else '' }}</small></label>
+        <label><span data-i18n="auth.username">Username</span><input name="username" id="signupUsername" autocomplete="username" minlength="3" required aria-describedby="usernameHint usernameError"><small id="usernameHint" class="field-hint" data-i18n="auth.username_hint">3+ characters. Availability checks as you type.</small><small class="field-error" id="usernameError">{{ field_errors.get('username', '') if field_errors else '' }}</small></label>
+      </div>
+      <div class="two-col">
+        <label><span data-i18n="auth.email">Email</span><input name="email" type="email" autocomplete="email" inputmode="email" pattern="^[A-Za-z0-9.!#$%&amp;'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$" required aria-describedby="emailError"><small class="field-error" id="emailError">{{ field_errors.get('email', '') if field_errors else '' }}</small></label>
+        <label><span data-i18n="auth.location">Location</span><input name="location" list="locationSuggestions" autocomplete="address-level2" placeholder="Start typing your area" required aria-describedby="locationHint locationError"><datalist id="locationSuggestions"><option value="Rajpur Road, Dehradun"><option value="Connaught Place, Delhi"><option value="Koramangala, Bengaluru"><option value="Hitech City, Hyderabad"><option value="Indiranagar, Bengaluru"><option value="Andheri, Mumbai"><option value="Salt Lake, Kolkata"><option value="Anna Nagar, Chennai"></datalist><small id="locationHint" data-i18n="auth.location_hint">Choose a neighborhood or city, or type a more specific area.</small><small class="field-error" id="locationError">{{ field_errors.get('location', '') if field_errors else '' }}</small></label>
+      </div>
+      <button class="btn btn-primary signup-next" type="button" data-signup-next data-i18n="auth.continue">Continue</button>
+    </div>
+    <div class="signup-step" data-signup-step="2">
+      <label><span data-i18n="auth.password">Password</span><div class="password-wrap"><input name="password" id="signupPassword" type="password" autocomplete="new-password" minlength="6" required aria-describedby="passwordHint passwordError"><button type="button" class="password-toggle" data-toggle-password="signupPassword" aria-label="Show password">Show</button></div><div class="password-strength" aria-live="polite"><span class="strength-meter"><i></i></span><strong data-strength-label>Use 8+ characters</strong></div><small id="passwordHint" data-i18n="auth.password_hint">A longer password is safer; use 8+ characters with a mix of letters, numbers, or symbols.</small><small class="field-error" id="passwordError">{{ field_errors.get('password', '') if field_errors else '' }}</small></label>
+      <div class="signup-step-actions"><button class="btn btn-secondary signup-back" type="button" data-signup-back data-i18n="auth.back">Back</button><button class="btn btn-primary btn-large" type="submit" data-i18n="auth.signup.submit">Create account</button></div>
+    </div>
+  </form>
+  <p class="auth-switch"><span data-i18n="auth.already">Already joined?</span> <a href="{{ url_for('auth.login') }}" data-i18n="auth.login_link">Log in</a></p>
+</div></section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/forms.js') }}" defer></script>{% endblock %}
